@@ -6,19 +6,28 @@ Tommy McNeela (https://www.linkedin.com/in/thomas-mcneela)
 Jeremy Tate (https://www.linkedin.com/in/jeremy-tate-83114b40)
 Version 0.1 20190522
 Version 0.1.1 20190522 -- added colors for terminal messages
+Version 0.1.2 20190522 -- now compatible with Windows and Python 3
 """
 ##### End Authors #####
 
 # import libraries
 import argparse
 import os
+import platform
 import requests
 from termcolor import colored
+
+# print in a specific color if not on Windows
+def printcolor(msg, color):
+    if OS != "Windows":
+        print(colored(msg, color))
+    else:
+        print(msg)
 
 # print message to screen if verbose
 def vlog(msg):
     if VERBOSE:
-        print colored(msg, "blue")
+        printcolor(msg, "blue")
 
 # check if subdomain / endpoint is valid
 def testsub(sub):
@@ -27,17 +36,19 @@ def testsub(sub):
     r = requests.get(url = URL, verify = SECURE)
     body = r.content
     r.close()
-    if FLAG in body:
+    if FLAG.encode() in body:
         # this is not a valid subdomain/endpoint
-        print colored("%s.%s is not a valid subdomain." % (sub, TLD), "yellow")
+        printcolor("%s.%s is not a valid subdomain." % (sub, TLD), "yellow")
     else:
         # this is a valid subdomain/endpoint
-        print colored("%s.%s is a valid subdomain." % (sub, TLD), "green")
+        printcolor("%s.%s is a valid subdomain." % (sub, TLD), "green")
 
 # default to HTTPS
 PROTO = "https"
 # default flag for OpenShift invalid requests
 FLAG = "The application is currently not serving requests at this endpoint. It may not have been started or is still starting."
+# check what OS we're on
+OS = platform.system()
 
 # build command line arguments
 parser = argparse.ArgumentParser(description = "Test for valid subdomains / endpoints hosted by an OpenShift deployment.")
@@ -78,4 +89,4 @@ elif SUB:
     # test single specified subdomain
     testsub(SUB)
 else:
-    print colored("Error, no valid input file or single subdomain specified.", "red")
+    printcolor("Error, no valid input file or single subdomain specified.", "red")
