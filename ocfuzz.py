@@ -1,11 +1,11 @@
 #!/usr/bin/python
 #
-
 ##### Authors #####
 """
 Tommy McNeela (https://www.linkedin.com/in/thomas-mcneela)
 Jeremy Tate (https://www.linkedin.com/in/jeremy-tate-83114b40)
 Version 0.1 20190522
+Version 0.1.1 20190522 -- added colors for terminal messages
 """
 ##### End Authors #####
 
@@ -13,11 +13,12 @@ Version 0.1 20190522
 import argparse
 import os
 import requests
+from termcolor import colored
 
 # print message to screen if verbose
 def vlog(msg):
     if VERBOSE:
-        print msg
+        print colored(msg, "blue")
 
 # check if subdomain / endpoint is valid
 def testsub(sub):
@@ -28,10 +29,10 @@ def testsub(sub):
     r.close()
     if FLAG in body:
         # this is not a valid subdomain/endpoint
-        print "%s.%s is not a valid subdomain." % (sub, TLD)
+        print colored("%s.%s is not a valid subdomain." % (sub, TLD), "yellow")
     else:
         # this is a valid subdomain/endpoint
-        print "%s.%s is a valid subdomain." % (sub, TLD)
+        print colored("%s.%s is a valid subdomain." % (sub, TLD), "green")
 
 # default to HTTPS
 PROTO = "https"
@@ -77,4 +78,4 @@ elif SUB:
     # test single specified subdomain
     testsub(SUB)
 else:
-    print "Error, no valid input file or single subdomain specified."
+    print colored("Error, no valid input file or single subdomain specified.", "red")
